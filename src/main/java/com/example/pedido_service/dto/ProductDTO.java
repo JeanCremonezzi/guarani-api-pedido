@@ -26,4 +26,6 @@ public class ProductDTO {
     @NotNull(message = "Quantity in stock is required")
     @Min(value = 0, message = "Quantity must be 0 (zero) or greater")
     private int quantityStock;
+
+    private boolean disabled;
 }

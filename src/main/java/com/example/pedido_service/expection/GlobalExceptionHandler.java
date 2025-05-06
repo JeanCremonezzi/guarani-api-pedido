@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleEntityNotFound(EntityNotFoundException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
@@ -36,6 +37,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleDuplicateKey(DuplicateKeyException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Duplicate key error: " + ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

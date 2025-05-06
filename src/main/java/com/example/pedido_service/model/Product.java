@@ -28,4 +28,7 @@ public class Product {
 
     @Column(nullable = false)
     private int quantityStock;
+
+    @Column(nullable = false)
+    private boolean disabled = false;
 }

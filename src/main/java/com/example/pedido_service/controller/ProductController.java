@@ -22,7 +22,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws Exception {
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid ProductDTO productDTO) throws RuntimeException {
         ProductDTO createdProduct = productService.createProduct(productDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
@@ -36,21 +36,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable("id") Long id) throws RuntimeException {
         ProductDTO product = productService.findProductById(id);
 
         return ResponseEntity.ok(product);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDTO productDTO) throws Exception {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable("id") Long id, @RequestBody @Valid ProductDTO productDTO) throws RuntimeException {
         ProductDTO updated = productService.updateProduct(id, productDTO);
 
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id) throws RuntimeException {
         productService.deleteProductById(id);
 
         return ResponseEntity.noContent().build();

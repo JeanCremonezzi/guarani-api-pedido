@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,9 +28,16 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedItem> products;
 
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
+
+    private Integer discount;
+
+    private BigDecimal shippingFee;
 }

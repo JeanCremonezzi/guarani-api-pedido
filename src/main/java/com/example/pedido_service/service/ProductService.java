@@ -20,7 +20,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductDTO createProduct(ProductDTO productDTO) throws Exception {
+    public ProductDTO createProduct(ProductDTO productDTO) throws RuntimeException {
         productRepository.findByDescription(productDTO.getDescription()).ifPresent((e) -> {
             throw new DuplicateKeyException("Duplicated description");
         });
@@ -37,14 +37,14 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO findProductById(Long id) throws Exception {
+    public ProductDTO findProductById(Long id) throws RuntimeException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
         return convertToDto(product);
     }
 
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) throws Exception {
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) throws RuntimeException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
@@ -52,16 +52,20 @@ public class ProductService {
         product.setPrice(productDTO.getPrice());
         product.setCategory(productDTO.getCategory());
         product.setQuantityStock(productDTO.getQuantityStock());
+        product.setDisabled(productDTO.isDisabled());
         product = productRepository.save(product);
 
         return convertToDto(product);
     }
 
-    public void deleteProductById (Long id) throws Exception {
+    public void deleteProductById (Long id) throws RuntimeException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-        productRepository.deleteById(id);
+        product.setDisabled(true);
+
+        product = productRepository.save(product);
+
     }
 
     private Product convertToEntity(ProductDTO productDTO) {
@@ -80,7 +84,8 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getCategory(),
-                product.getQuantityStock()
+                product.getQuantityStock(),
+                product.isDisabled()
         );
     }
 }
