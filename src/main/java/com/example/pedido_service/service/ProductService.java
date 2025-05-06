@@ -1,6 +1,8 @@
 package com.example.pedido_service.service;
 
+import com.example.pedido_service.dto.CreateProductDTO;
 import com.example.pedido_service.dto.ProductDTO;
+import com.example.pedido_service.dto.UpdateProductDTO;
 import com.example.pedido_service.model.Product;
 import com.example.pedido_service.repository.ProductRepository;
 import com.example.pedido_service.specification.ProductSpecifications;
@@ -23,7 +25,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductDTO createProduct(ProductDTO productDTO) throws RuntimeException {
+    public ProductDTO createProduct(CreateProductDTO productDTO) throws RuntimeException {
         productRepository.findByDescription(productDTO.getDescription()).ifPresent((e) -> {
             throw new DuplicateKeyException("Duplicated description");
         });
@@ -47,7 +49,7 @@ public class ProductService {
         return convertToDto(product);
     }
 
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) throws RuntimeException {
+    public ProductDTO updateProduct(Long id, UpdateProductDTO productDTO) throws RuntimeException {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
@@ -67,8 +69,7 @@ public class ProductService {
 
         product.setDisabled(true);
 
-        product = productRepository.save(product);
-
+        productRepository.save(product);
     }
 
     public List<ProductDTO> findFilteredProducts(String description, String category, BigDecimal minPrice, BigDecimal maxPrice) {
@@ -82,9 +83,8 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    private Product convertToEntity(ProductDTO productDTO) {
+    private Product convertToEntity(CreateProductDTO productDTO) {
         Product product = new Product();
-        product.setId(productDTO.getId());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setCategory(productDTO.getCategory());

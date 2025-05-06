@@ -1,7 +1,6 @@
 package com.example.pedido_service.service;
 
-import com.example.pedido_service.dto.OrderDTO;
-import com.example.pedido_service.dto.OrderedItemDTO;
+import com.example.pedido_service.dto.*;
 import com.example.pedido_service.enums.OrderStatus;
 import com.example.pedido_service.model.Order;
 import com.example.pedido_service.model.OrderedItem;
@@ -32,7 +31,7 @@ public class OrderService {
         this.productRepository = productRepository;
     }
 
-    public OrderDTO createOrder(OrderDTO orderDTO) throws RuntimeException {
+    public OrderDTO createOrder(CreateOrderDTO orderDTO) throws RuntimeException {
         Order order = convertToEntity(orderDTO);
 
         order.setStatus(OrderStatus.PENDING);
@@ -76,7 +75,7 @@ public class OrderService {
         return convertToDto(order);
     }
 
-    public OrderDTO updateOrder(Long id, OrderDTO orderDTO) throws RuntimeException {
+    public OrderDTO updateOrder(Long id, UpdateOrderDTO orderDTO) throws RuntimeException {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
@@ -142,11 +141,8 @@ public class OrderService {
         return totalPrice;
     }
 
-    private Order convertToEntity(OrderDTO orderDTO) {
+    private Order convertToEntity(CreateOrderDTO orderDTO) {
         Order order = new Order();
-        order.setId(orderDTO.getId());
-        order.setDateCreated(orderDTO.getDateCreated());
-        order.setStatus(orderDTO.getStatus());
         order.setPaymentMethod(orderDTO.getPaymentMethod());
         order.setDiscount(orderDTO.getDiscount());
         order.setShippingFee(orderDTO.getShippingFee());
@@ -172,7 +168,7 @@ public class OrderService {
         return order;
     }
 
-    private Product checkProduct(OrderedItemDTO itemDTO) {
+    private Product checkProduct(CreateOrderedItemDTO itemDTO) {
         Product product = productRepository.findById(itemDTO.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Product not found: " + itemDTO.getProductId()));
 
@@ -181,7 +177,7 @@ public class OrderService {
         }
 
         if (product.getQuantityStock() < itemDTO.getQuantity()) {
-            throw new IllegalStateException("Insufficient stock for product" + itemDTO.getProductDescription());
+            throw new IllegalStateException("Insufficient stock for product" + product.getDescription());
         }
 
         product.setQuantityStock(product.getQuantityStock() - itemDTO.getQuantity());
