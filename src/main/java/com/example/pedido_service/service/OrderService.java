@@ -8,8 +8,10 @@ import com.example.pedido_service.model.OrderedItem;
 import com.example.pedido_service.model.Product;
 import com.example.pedido_service.repository.OrderRepository;
 import com.example.pedido_service.repository.ProductRepository;
+import com.example.pedido_service.specification.OrderSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -112,6 +114,17 @@ public class OrderService {
 
         Order updatedOrder = orderRepository.save(order);
         return convertToDto(updatedOrder);
+    }
+
+    public List<OrderDTO> findFilteredOrders(OrderStatus status, LocalDateTime startDate, LocalDateTime endDate, BigDecimal minPrice, BigDecimal maxPrice) {
+        Specification<Order> spec = Specification
+                .where(OrderSpecification.hasStatus(status))
+                .and(OrderSpecification.dateCreatedBetween(startDate, endDate))
+                .and(OrderSpecification.totalPriceBetween(minPrice, maxPrice));
+
+        return orderRepository.findAll(spec).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     private BigDecimal calculateTotalPrice(List<OrderedItem> orderedItems, int discount, BigDecimal shippingFee) {

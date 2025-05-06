@@ -3,11 +3,14 @@ package com.example.pedido_service.service;
 import com.example.pedido_service.dto.ProductDTO;
 import com.example.pedido_service.model.Product;
 import com.example.pedido_service.repository.ProductRepository;
+import com.example.pedido_service.specification.ProductSpecifications;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,6 +69,17 @@ public class ProductService {
 
         product = productRepository.save(product);
 
+    }
+
+    public List<ProductDTO> findFilteredProducts(String description, String category, BigDecimal minPrice, BigDecimal maxPrice) {
+        Specification<Product> spec = Specification.where(ProductSpecifications.descriptionContains(description))
+                .and(ProductSpecifications.categoryEquals(category))
+                .and(ProductSpecifications.priceGreaterThanOrEqualTo(minPrice))
+                .and(ProductSpecifications.priceLessThanOrEqualTo(maxPrice));
+
+        return productRepository.findAll(spec).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     private Product convertToEntity(ProductDTO productDTO) {
