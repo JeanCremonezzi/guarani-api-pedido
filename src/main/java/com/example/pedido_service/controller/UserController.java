@@ -1,9 +1,9 @@
 package com.example.pedido_service.controller;
 
 import com.example.pedido_service.dto.CreateUserDTO;
-import com.example.pedido_service.enums.UserRole;
 import com.example.pedido_service.model.User;
 import com.example.pedido_service.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,10 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(
+            summary = "Cadastro de usuários",
+            description = "Não é necessário estar autenticado para acessar este endpoint"
+    )
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO userDTO) {
         var userExists = userRepository.findByUsername(userDTO.getUsername());

@@ -5,6 +5,7 @@ import com.example.pedido_service.dto.ProductDTO;
 import com.example.pedido_service.dto.UpdateProductDTO;
 import com.example.pedido_service.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class ProductController {
 
     @Operation(
             summary = "Cria um novo Produto",
-            description = "Recebe a descrição (nome), preço, categoria e quantidade em estoque"
+            description = "Apenas ADMIN ou OPERADOR podem criar um novo produto",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @PostMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
@@ -41,7 +43,8 @@ public class ProductController {
     }
 
     @Operation(
-            summary = "Busca todos os Produtos registrados"
+            summary = "Busca todos os Produtos registrados",
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem acessar todos os produtos registrados"
     )
     @GetMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
@@ -53,7 +56,7 @@ public class ProductController {
 
     @Operation(
             summary = "Busca um Produto",
-            description = "Recebe o ID do Produto buscado"
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem acessar detalhes de um produto específico"
     )
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
@@ -65,7 +68,7 @@ public class ProductController {
 
     @Operation(
             summary = "Atualiza um Produto",
-            description = "Recebe o ID e altera os campos permitidos"
+            description = "Apenas ADMIN ou OPERADOR podem atualizar um produto"
     )
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
@@ -77,7 +80,7 @@ public class ProductController {
 
     @Operation(
             summary = "Deleta um Produto",
-            description = "Busca um Produto pelo ID e o desativa"
+            description = "Apenas ADMIN pode desativar um produto"
     )
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
@@ -89,7 +92,7 @@ public class ProductController {
 
     @Operation(
             summary = "Busca Produtos através de filtros",
-            description = "Retorna todos os Produtos que se encaixem nos filtros fornecidos"
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem buscar produtos filtrados por descrição, categoria, preço mínimo e preço máximo"
     )
     @GetMapping("/search")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")

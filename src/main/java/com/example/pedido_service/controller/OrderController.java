@@ -35,7 +35,7 @@ public class OrderController {
 
     @Operation(
             summary = "Cria um novo Pedido",
-            description = "Recebe os produtos, desconto, frete e método de pagamento do pedido."
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem criar um pedido"
     )
     @PostMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
@@ -46,7 +46,8 @@ public class OrderController {
     }
 
     @Operation(
-            summary = "Busca todos os Pedidos registrados"
+            summary = "Busca todos os Pedidos registrados",
+            description = "Apenas usuários ADMIN ou OPERADOR podem acessar todos os pedidos registrados"
     )
     @GetMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
@@ -58,7 +59,7 @@ public class OrderController {
 
     @Operation(
             summary = "Busca um Pedido",
-            description = "Recebe o ID do Pedido buscado"
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem acessar detalhes de um pedido específico"
     )
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
@@ -70,7 +71,7 @@ public class OrderController {
 
     @Operation(
             summary = "Deleta um pedido",
-            description = "Busca um Pedido pelo ID e altera o Status para CANCELLED"
+            description = "Apenas ADMIN pode cancelar um pedido"
     )
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
@@ -82,7 +83,7 @@ public class OrderController {
 
     @Operation(
             summary = "Atualiza um Pedido",
-            description = "Recebe o ID e altera os campos permitidos"
+            description = "Apenas ADMIN ou OPERADOR podem atualizar um pedido"
     )
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
@@ -94,7 +95,7 @@ public class OrderController {
 
     @Operation(
             summary = "Busca Pedidos através de filtros",
-            description = "Retorna todos os Pedidos que se encaixem nos filtros fornecidos"
+            description = "Usuários ADMIN, OPERADOR, ou CLIENTE podem buscar pedidos filtrados por status, data, e valor"
     )
     @GetMapping("/search")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")

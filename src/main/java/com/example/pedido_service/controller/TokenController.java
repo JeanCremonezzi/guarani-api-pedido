@@ -3,6 +3,7 @@ package com.example.pedido_service.controller;
 import com.example.pedido_service.dto.LoginRequestDTO;
 import com.example.pedido_service.dto.LoginResponseDTO;
 import com.example.pedido_service.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,10 @@ public class TokenController {
         this.userRepository = userRepository;
     }
 
+    @Operation(
+            summary = "Autenticação de usuários",
+            description = "Não é necessário estar autenticado para acessar este endpoint"
+    )
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         var user = userRepository.findByUsername(loginRequestDTO.getUsername());
