@@ -73,7 +73,7 @@ public class OrderController {
             description = "Busca um Pedido pelo ID e altera o Status para CANCELLED"
     )
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     public ResponseEntity<OrderDTO> cancelOrderById(@PathVariable("id") Long id) throws RuntimeException {
         OrderDTO updated = orderService.cancelOrderById(id);
 
