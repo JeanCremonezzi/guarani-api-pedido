@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -37,6 +38,7 @@ public class OrderController {
             description = "Recebe os produtos, desconto, frete e método de pagamento do pedido."
     )
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid CreateOrderDTO orderDTO) throws RuntimeException {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
 
@@ -47,6 +49,7 @@ public class OrderController {
             summary = "Busca todos os Pedidos registrados"
     )
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<OrderDTO> orders = orderService.findAllOrders();
 
@@ -58,6 +61,7 @@ public class OrderController {
             description = "Recebe o ID do Pedido buscado"
     )
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long id) throws RuntimeException {
         OrderDTO order = orderService.findOrderById(id);
 
@@ -69,6 +73,7 @@ public class OrderController {
             description = "Busca um Pedido pelo ID e altera o Status para CANCELLED"
     )
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
     public ResponseEntity<OrderDTO> cancelOrderById(@PathVariable("id") Long id) throws RuntimeException {
         OrderDTO updated = orderService.cancelOrderById(id);
 
@@ -80,6 +85,7 @@ public class OrderController {
             description = "Recebe o ID e altera os campos permitidos"
     )
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR')")
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable("id") Long id, @RequestBody @Valid UpdateOrderDTO orderDTO) throws RuntimeException {
         OrderDTO updated = orderService.updateOrder(id, orderDTO);
 
@@ -91,6 +97,7 @@ public class OrderController {
             description = "Retorna todos os Pedidos que se encaixem nos filtros fornecidos"
     )
     @GetMapping("/search")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_OPERADOR', 'SCOPE_CLIENTE')")
     public List<OrderDTO> searchOrders(
             @RequestParam(name = "status", required = false) OrderStatus status,
             @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
