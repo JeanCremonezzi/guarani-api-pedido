@@ -64,7 +64,6 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-
     @Operation(
             summary = "Deleta um pedido",
             description = "Busca um Pedido pelo ID e altera o Status para CANCELLED"

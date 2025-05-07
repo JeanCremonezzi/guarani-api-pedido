@@ -188,7 +188,7 @@ public class OrderService {
         List<OrderedItemDTO> productDTOs = order.getProducts().stream().map(item -> new OrderedItemDTO(
                 item.getProduct().getId(),
                 item.getProduct().getDescription(),
-                item.getProduct().getPrice(),
+                item.getUnitaryPrice(),
                 item.getQuantity()
         )).toList();
 
